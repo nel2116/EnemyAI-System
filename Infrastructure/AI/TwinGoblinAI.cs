@@ -35,9 +35,12 @@ namespace app.enemy.ai
             _move = move;
             _combat = combat;
             _baseAI = new BasicEnemyAI(ctx, move, combat, dispatcher, cfg);
-            _pairBehavior = new PairBehavior(dispatcher, new EnemyId(pair));
-            _enrageBehavior = new EnrageBehavior(src.EnrageSpeedMul, src.EnrageAttackMul);
 
+            _pairBehavior = new PairBehavior(dispatcher, new EnemyId(pair));
+            _pairBehavior.Initialize(null!); // dispatcher registration
+
+            _enrageBehavior = new EnrageBehavior(src.EnrageSpeedMul, src.EnrageAttackMul);
+            
             _pairBehavior.OnPairMemberDied += OnPairMemberDied;
             _enrageBehavior.OnEnrageTriggered += OnEnrageTriggered;
         }
