@@ -6,8 +6,6 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
-using via;
-using via.attribute;
 
 namespace app.enemy.domain.interfaces
 {
