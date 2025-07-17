@@ -40,7 +40,7 @@ namespace app.enemy.ai
 
             _enrageBehavior = new EnrageBehavior(src.EnrageSpeedMul, src.EnrageAttackMul);
 
-            _pairBehavior.OnPairMemberDied += OnPairMemberDied;
+            _pairBehavior.OnPairMemberDied += _ => OnPairMemberDied();
             _enrageBehavior.OnEnrageTriggered += OnEnrageTriggered;
         }
 
@@ -60,7 +60,7 @@ namespace app.enemy.ai
             _enrageBehavior.Update(dt);
         }
 
-        private void OnPairMemberDied(EnemyId id)
+        private void OnPairMemberDied()
         {
             _enrageBehavior.TriggerEnrage();
         }

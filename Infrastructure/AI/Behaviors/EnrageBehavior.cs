@@ -47,7 +47,16 @@ namespace app.enemy.ai.behaviors
 
         public void Dispose()
         {
-            OnEnrageTriggered = null;
+            UnsubscribeAllHandlers();
+        }
+
+        private void UnsubscribeAllHandlers()
+        {
+            if (OnEnrageTriggered == null) return;
+            foreach (var handler in OnEnrageTriggered.GetInvocationList())
+            {
+                OnEnrageTriggered -= (Action)handler;
+            }
         }
     }
 }
