@@ -6,8 +6,8 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
-using via;
-using via.attribute;
+using app.enemy.core.interfaces;
+using app.enemy.core.values;
 
 namespace app.enemy.domain.interfaces
 {
@@ -23,22 +23,22 @@ namespace app.enemy.domain.interfaces
         /// <summary>
         /// 自分の参照
         /// </summary>
-        GameObject Self { get; }
+        IGameObject Self { get; }
 
         /// <summary>
         /// ターゲットの参照
         /// </summary>
-        GameObject Target { get; }
+        IGameObject Target { get; }
 
         /// <summary>
         /// 現在自分がいるワールド座標
         /// </summary>
-        vec3 SelfPosition { get; }
+        Vector3 SelfPosition { get; }
 
         /// <summary>
         /// ターゲットのワールド座標
         /// </summary>
-        vec3 TargetPosition { get; }
+        Vector3 TargetPosition { get; }
 
         /// <summary>
         /// ターゲットまでの直線距離

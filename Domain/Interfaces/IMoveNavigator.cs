@@ -6,8 +6,7 @@
 //======================================================================
 using System;
 using System.Collections.Generic;
-using via;
-using via.attribute;
+using app.enemy.core.interfaces;
 
 namespace app.enemy.domain.interfaces
 {
@@ -16,7 +15,7 @@ namespace app.enemy.domain.interfaces
     /// </summary>
     public interface IMoveNavigator : IMoveLogic
     {
-        void SetTarget(GameObject target);
+        void SetTarget(IGameObject target);
         void Stop();
         bool IsArrived { get; }
     }
