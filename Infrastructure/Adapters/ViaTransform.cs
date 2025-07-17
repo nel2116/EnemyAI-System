@@ -5,6 +5,7 @@
 using System;
 using app.enemy.core.interfaces;
 using app.enemy.core.values;
+using app.enemy.infrastructure.extensions;
 using via;
 
 namespace app.enemy.infrastructure.adapters

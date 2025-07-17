@@ -18,6 +18,6 @@ namespace app.enemy.core.values
             W = w;
         }
 
-        public static Quaternion Identity => new(0f, 0f, 0f, 1f);
+        public static readonly Quaternion Identity = new(0f, 0f, 0f, 1f);
     }
 }

@@ -16,8 +16,8 @@ namespace app.enemy.core.values
             Z = z;
         }
 
-        public static Vector3 Zero => new(0f, 0f, 0f);
-        public static Vector3 One => new(1f, 1f, 1f);
+        public static readonly Vector3 Zero = new(0f, 0f, 0f);
+        public static readonly Vector3 One = new(1f, 1f, 1f);
 
         public static Vector3 operator +(Vector3 a, Vector3 b) => new(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
         public static Vector3 operator -(Vector3 a, Vector3 b) => new(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
