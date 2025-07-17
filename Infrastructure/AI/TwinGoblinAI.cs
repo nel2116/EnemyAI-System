@@ -37,12 +37,17 @@ namespace app.enemy.ai
             _baseAI = new BasicEnemyAI(ctx, move, combat, dispatcher, cfg);
 
             _pairBehavior = new PairBehavior(dispatcher, new EnemyId(pair));
-            _pairBehavior.Initialize(null!); // dispatcher registration
 
             _enrageBehavior = new EnrageBehavior(src.EnrageSpeedMul, src.EnrageAttackMul);
-            
+
             _pairBehavior.OnPairMemberDied += OnPairMemberDied;
             _enrageBehavior.OnEnrageTriggered += OnEnrageTriggered;
+        }
+
+        public void Initialize(IEnemyUnit unit)
+        {
+            _pairBehavior.Initialize(unit);
+            _enrageBehavior.Initialize(unit);
         }
 
         public void Tick(float dt)
@@ -65,14 +70,12 @@ namespace app.enemy.ai
 
         private void SetSpeedMultiplier(float m)
         {
-            if (_move is NavigationMoveLogic nav)
-                nav.SetSpeedMultiplier(m);
+            _move.SetSpeedMultiplier(m);
         }
 
         private void SetAttackMultiplier(float m)
         {
-            if (_combat is SimpleCombatLogic sc)
-                sc.SetAttackMultiplier(m);
+            _combat.SetAttackMultiplier(m);
         }
 
         public void Dispose()
