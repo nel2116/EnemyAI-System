@@ -87,6 +87,12 @@ namespace app.enemy.ai
             _dispatcher.Register<EnemyDiedEvent>(OnEnemyDied);
         }
 
+        /// <summary>
+        /// Optional initialization hook for composed usage.
+        /// </summary>
+        /// <param name="unit">owning enemy unit</param>
+        public virtual void Initialize(IEnemyUnit unit) { }
+
         private void OnEnemyDied(EnemyDiedEvent e)
         {
             if (e.Id.Value != _ctx.EnemyId.Value) return;

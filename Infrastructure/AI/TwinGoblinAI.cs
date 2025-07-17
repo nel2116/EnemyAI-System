@@ -20,6 +20,8 @@ namespace app.enemy.ai
         private readonly BasicEnemyAI _baseAI;
         private readonly IMoveLogic _move;
         private readonly ICombatLogic _combat;
+        private readonly DomainEventDispatcher _dispatcher;
+        private readonly IAIContext _ctx;
         private readonly IPairBehavior _pairBehavior;
         private readonly IEnrageBehavior _enrageBehavior;
         private bool _initialized;
@@ -33,8 +35,10 @@ namespace app.enemy.ai
             TwinGoblinUserData src,
             Guid pair)
         {
+            _ctx = ctx;
             _move = move;
             _combat = combat;
+            _dispatcher = dispatcher;
             _baseAI = new BasicEnemyAI(ctx, move, combat, dispatcher, cfg);
 
             _pairBehavior = new PairBehavior(dispatcher, new EnemyId(pair));
@@ -50,6 +54,7 @@ namespace app.enemy.ai
             if (unit == null)
                 throw new ArgumentNullException(nameof(unit));
             if (_initialized) return;
+            _baseAI.Initialize(unit);
             _pairBehavior.Initialize(unit);
             _enrageBehavior.Initialize(unit);
             _initialized = true;
@@ -72,6 +77,7 @@ namespace app.enemy.ai
         {
             SetSpeedMultiplier(_enrageBehavior.SpeedMultiplier);
             SetAttackMultiplier(_enrageBehavior.AttackMultiplier);
+            _dispatcher.Dispatch(new TwinEnragedEvent(_ctx.EnemyId));
         }
 
         private void SetSpeedMultiplier(float m)
