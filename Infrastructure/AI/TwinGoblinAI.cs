@@ -4,62 +4,97 @@
 /// <author>CGC_10_田中 ミノル</author>
 
 using System;
-using System.Collections.Generic;
+using app.enemy.ai.behaviors;
 using app.enemy.data;
 using app.enemy.domain;
-using app.enemy.domain.enums;
 using app.enemy.domain.events;
 using app.enemy.domain.interfaces;
-using via;
-using via.attribute;
+using app.enemy.infrastructure;
 
 namespace app.enemy.ai
 {
     public readonly record struct PairLink(Guid Id);
 
-    public sealed class TwinGoblinAI : BasicEnemyAI
+    public sealed class TwinGoblinAI : IEnemyAi, IDisposable
     {
-        private readonly EnemyId _pairId;
-        private readonly Func<float> _enrageSpeedMul;
-        private readonly Func<float> _enrageAtkMul;
-        private readonly GameObject _enragedTarget;
-        private readonly DomainEventDispatcher _disp;
+        private readonly BasicEnemyAI _baseAI;
+        private readonly IMoveLogic _move;
+        private readonly ICombatLogic _combat;
+        private readonly DomainEventDispatcher _dispatcher;
         private readonly IAIContext _ctx;
-        private bool _enraged;
+        private readonly IPairBehavior _pairBehavior;
+        private readonly IEnrageBehavior _enrageBehavior;
+        private bool _initialized;
 
-        public TwinGoblinAI(IAIContext ctx, IMoveLogic move, ICombatLogic combat, DomainEventDispatcher dispatcher, BasicEnemyAI.Config cfg, TwinGoblinUserData src, Guid pair)
-            : base(ctx, move, combat, dispatcher, cfg)
+        public TwinGoblinAI(
+            IAIContext ctx,
+            IMoveLogic move,
+            ICombatLogic combat,
+            DomainEventDispatcher dispatcher,
+            BasicEnemyAI.Config cfg,
+            TwinGoblinUserData src,
+            Guid pair)
         {
-            _enrageSpeedMul = () => src.EnrageSpeedMul;
-            _enrageAtkMul = () => src.EnrageAttackMul;
             _ctx = ctx;
-            _disp = dispatcher;
-            _enragedTarget = src.EnragedTarget.Target;
-            _pairId = new EnemyId(pair);
+            _move = move;
+            _combat = combat;
+            _dispatcher = dispatcher;
+            _baseAI = new BasicEnemyAI(ctx, move, combat, dispatcher, cfg);
 
-            // TODO: 少女を取得し _enragedTarget に格納
-            _disp.Register<TwinMateDeedEvent>(OnMateDied);
-            _disp.Register<TwinMateDeedEvent>(OnSelfDied);
+            _pairBehavior = new PairBehavior(dispatcher, new EnemyId(pair));
+
+            _enrageBehavior = new EnrageBehavior(src.EnrageSpeedMul, src.EnrageAttackMul);
+
+            _pairBehavior.OnPairMemberDied += _ => OnPairMemberDied();
+            _enrageBehavior.OnEnrageTriggered += OnEnrageTriggered;
         }
 
-        void OnSelfDied(TwinMateDeedEvent e)
+        public void Initialize(IEnemyUnit unit)
         {
-            if (e.Id.Value != _ctx.EnemyId.Value) return;
-            if (Current == AiState.Dead) return;
-            SwitchState(AiState.Dead);
+            if (unit == null)
+                throw new ArgumentNullException(nameof(unit));
+            if (_initialized) return;
+            _baseAI.Initialize(unit);
+            _pairBehavior.Initialize(unit);
+            _enrageBehavior.Initialize(unit);
+            _initialized = true;
         }
 
-        void OnMateDied(TwinMateDeedEvent e)
+        public void Tick(float dt)
         {
-            if (_enraged || e.PairId != _pairId || e.Id == _ctx.EnemyId) return;
+            if (!_initialized) throw new InvalidOperationException("TwinGoblinAI is not initialized");
+            _baseAI.Tick(dt);
+            _pairBehavior.Update(dt);
+            _enrageBehavior.Update(dt);
+        }
 
-            _enraged = true;
-            SetSpeedMultiplier(_enrageSpeedMul());
-            SetAttackMultiplier(_enrageAtkMul());
+        private void OnPairMemberDied()
+        {
+            _enrageBehavior.TriggerEnrage();
+        }
 
-            // TODO: ターゲットの変更
+        private void OnEnrageTriggered()
+        {
+            SetSpeedMultiplier(_enrageBehavior.SpeedMultiplier);
+            SetAttackMultiplier(_enrageBehavior.AttackMultiplier);
+            _dispatcher.Dispatch(new TwinEnragedEvent(_ctx.EnemyId));
+        }
 
-            _disp.Dispatch(new TwinEnragedEvent(_ctx.EnemyId));
+        private void SetSpeedMultiplier(float m)
+        {
+            _move.SetSpeedMultiplier(m);
+        }
+
+        private void SetAttackMultiplier(float m)
+        {
+            _combat.SetAttackMultiplier(m);
+        }
+
+        public void Dispose()
+        {
+            (_baseAI as IDisposable)?.Dispose();
+            _pairBehavior.Dispose();
+            _enrageBehavior.Dispose();
         }
     }
 }
