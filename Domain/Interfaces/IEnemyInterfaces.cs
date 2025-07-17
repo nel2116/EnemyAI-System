@@ -24,6 +24,11 @@ namespace app.enemy.domain.interfaces
         /// 現在速度(m/s) デバッグ/アニメ制御用
         /// </summary>
         float CurrentSpeed { get; }
+
+        /// <summary>
+        /// 移動速度倍率を設定
+        /// </summary>
+        void SetSpeedMultiplier(float m);
     }
 
     /// <summary>
@@ -50,6 +55,11 @@ namespace app.enemy.domain.interfaces
         /// 次に使用できるまでの残り時間(秒)
         /// </summary>
         float CooldownRemaining { get; }
+
+        /// <summary>
+        /// 攻撃倍率を設定
+        /// </summary>
+        void SetAttackMultiplier(float m);
 
         event Action? OnAttack;
     }

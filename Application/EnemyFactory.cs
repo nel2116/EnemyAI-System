@@ -79,7 +79,9 @@ namespace app.enemy.app
             var ai = new TwinGoblinAI(ctx, move, combat, disp, cfg, td, pair?.Id ?? Guid.Empty);
             var core = new TwinGoblin(ctx.EnemyId, d.MaxHp, 0.3f, disp, pair?.Id ?? Guid.Empty);
 
-            return new EnemyDomainService(core, move, combat, ai, disp);
+            var unit = new EnemyDomainService(core, move, combat, ai, disp);
+            ai.Initialize(unit);
+            return unit;
         }
     }
 }
