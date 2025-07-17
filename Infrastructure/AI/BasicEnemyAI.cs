@@ -124,14 +124,12 @@ namespace app.enemy.ai
 
         protected void SetSpeedMultiplier(float m)
         {
-            if (_move is NavigationMoveLogic nav)
-                nav.SetSpeedMultiplier(m);
+            _move.SetSpeedMultiplier(m);
         }
 
         protected void SetAttackMultiplier(float m)
         {
-            if (_combat is SimpleCombatLogic sc)
-                sc.SetAttackMultiplier(m);
+            _combat.SetAttackMultiplier(m);
         }
 
         #endregion
