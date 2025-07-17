@@ -15,7 +15,6 @@ namespace app.enemy.ai.behaviors
     public interface IPairBehavior : IEnemyBehavior
     {
         event Action<EnemyId> OnPairMemberDied;
-        void SetPairId(EnemyId pairId);
         bool IsPaired { get; }
     }
 
@@ -45,11 +44,6 @@ namespace app.enemy.ai.behaviors
             _token = _dispatcher.Register<TwinMateDeedEvent>(OnTwinMateDead);
         }
 
-        public void SetPairId(EnemyId pairId)
-        {
-            _pairId = pairId;
-        }
-
         private void OnTwinMateDead(TwinMateDeedEvent e)
         {
             if (e.PairId != _pairId) return;
@@ -65,16 +59,6 @@ namespace app.enemy.ai.behaviors
         public void Dispose()
         {
             _token?.Dispose();
-            UnsubscribeAllHandlers();
-        }
-
-        private void UnsubscribeAllHandlers()
-        {
-            if (OnPairMemberDied == null) return;
-            foreach (var handler in OnPairMemberDied.GetInvocationList())
-            {
-                OnPairMemberDied -= (Action<EnemyId>)handler;
-            }
         }
     }
 }

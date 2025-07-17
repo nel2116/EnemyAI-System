@@ -22,6 +22,7 @@ namespace app.enemy.ai
         private readonly ICombatLogic _combat;
         private readonly IPairBehavior _pairBehavior;
         private readonly IEnrageBehavior _enrageBehavior;
+        private bool _initialized;
 
         public TwinGoblinAI(
             IAIContext ctx,
@@ -48,13 +49,15 @@ namespace app.enemy.ai
         {
             if (unit == null)
                 throw new ArgumentNullException(nameof(unit));
-
+            if (_initialized) return;
             _pairBehavior.Initialize(unit);
             _enrageBehavior.Initialize(unit);
+            _initialized = true;
         }
 
         public void Tick(float dt)
         {
+            if (!_initialized) throw new InvalidOperationException("TwinGoblinAI is not initialized");
             _baseAI.Tick(dt);
             _pairBehavior.Update(dt);
             _enrageBehavior.Update(dt);

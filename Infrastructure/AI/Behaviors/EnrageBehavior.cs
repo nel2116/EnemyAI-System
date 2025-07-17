@@ -45,18 +45,6 @@ namespace app.enemy.ai.behaviors
             OnEnrageTriggered?.Invoke();
         }
 
-        public void Dispose()
-        {
-            UnsubscribeAllHandlers();
-        }
-
-        private void UnsubscribeAllHandlers()
-        {
-            if (OnEnrageTriggered == null) return;
-            foreach (var handler in OnEnrageTriggered.GetInvocationList())
-            {
-                OnEnrageTriggered -= (Action)handler;
-            }
-        }
+        public void Dispose() { }
     }
 }
