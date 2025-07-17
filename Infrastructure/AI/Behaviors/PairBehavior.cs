@@ -25,6 +25,7 @@ namespace app.enemy.ai.behaviors
         private EnemyId _pairId;
         private IDisposable? _token;
         private bool _initialized;
+        private IEnemyUnit? _enemy;
 
         public event Action<EnemyId>? OnPairMemberDied;
 
@@ -39,6 +40,7 @@ namespace app.enemy.ai.behaviors
         public void Initialize(IEnemyUnit enemy)
         {
             if (_initialized) return;
+            _enemy = enemy ?? throw new ArgumentNullException(nameof(enemy));
             _initialized = true;
             _token = _dispatcher.Register<TwinMateDeedEvent>(OnTwinMateDead);
         }
