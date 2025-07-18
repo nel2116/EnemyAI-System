@@ -71,7 +71,7 @@ namespace app.enemy.ai
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError($"Failed to initialize {step}: {ex}");
+                    Trace.TraceError($"Failed to initialize {step}: {ex.Message}", ex);
                     _enrageBehavior.Dispose();
                     _pairBehavior.Dispose();
                     _baseAI.Dispose();

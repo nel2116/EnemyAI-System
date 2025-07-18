@@ -57,7 +57,7 @@ namespace app.enemy.ai.behaviors
 
         private void OnTwinMateDead(TwinMateDeedEvent e)
         {
-            if (!Volatile.Read(ref _initialized)) return;
+            if (!_initialized) return;
             if (e.PairId != _pairId) return;
             if (_enemy == null || e.Id == _enemy.Id) return;
             OnPairMemberDied?.Invoke(e.Id);
@@ -65,7 +65,7 @@ namespace app.enemy.ai.behaviors
 
         public void Update(float deltaTime)
         {
-            if (!Volatile.Read(ref _initialized)) return;
+            if (!_initialized) return;
 
             // No operation. This behavior reacts to domain events and
             // requires no per-frame logic.

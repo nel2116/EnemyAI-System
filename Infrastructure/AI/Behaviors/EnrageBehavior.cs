@@ -52,7 +52,7 @@ namespace app.enemy.ai.behaviors
 
         public void Update(float deltaTime)
         {
-            if (!Volatile.Read(ref _initialized)) return;
+            if (!_initialized) return;
 
             // No operation. This behavior is event-driven and does not
             // require per-frame updates.
@@ -62,7 +62,7 @@ namespace app.enemy.ai.behaviors
         {
             lock (_lock)
             {
-                if (!Volatile.Read(ref _initialized))
+                if (!_initialized)
                     throw new InvalidOperationException("EnrageBehavior must be initialized before triggering enrage.");
 
                 if (_enraged) return;
