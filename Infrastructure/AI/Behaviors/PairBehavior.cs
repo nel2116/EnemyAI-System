@@ -47,7 +47,7 @@ namespace app.enemy.ai.behaviors
         private void OnTwinMateDead(TwinMateDeedEvent e)
         {
             if (e.PairId != _pairId) return;
-            if (_enemy != null && e.Id == _enemy.Id) return;
+            if (e.Id == _enemy.Id) return;
             OnPairMemberDied?.Invoke(e.Id);
         }
 
