@@ -66,7 +66,7 @@ namespace app.enemy.ai
 
         public void Tick(float dt)
         {
-            if (!_initialized)
+            if (!Volatile.Read(ref _initialized))
                 throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
 
             _baseAI.Tick(dt);
@@ -81,19 +81,9 @@ namespace app.enemy.ai
 
         private void OnEnrageTriggered()
         {
-            SetSpeedMultiplier(_enrageBehavior.SpeedMultiplier);
-            SetAttackMultiplier(_enrageBehavior.AttackMultiplier);
+            _move.SetSpeedMultiplier(_enrageBehavior.SpeedMultiplier);
+            _combat.SetAttackMultiplier(_enrageBehavior.AttackMultiplier);
             _dispatcher.Dispatch(new TwinEnragedEvent(_ctx.EnemyId));
-        }
-
-        private void SetSpeedMultiplier(float m)
-        {
-            _move.SetSpeedMultiplier(m);
-        }
-
-        private void SetAttackMultiplier(float m)
-        {
-            _combat.SetAttackMultiplier(m);
         }
 
         public void Dispose()

@@ -56,8 +56,11 @@ namespace app.enemy.ai.behaviors
 
         public void TriggerEnrage()
         {
-            if (_enraged) return;
-            _enraged = true;
+            lock (_lock)
+            {
+                if (_enraged) return;
+                _enraged = true;
+            }
             OnEnrageTriggered?.Invoke();
         }
 
