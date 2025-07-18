@@ -57,19 +57,34 @@ namespace app.enemy.ai
             lock (_lock)
             {
                 if (_initialized) return;
-                _baseAI.Initialize(unit);
-                _pairBehavior.Initialize(unit);
-                _enrageBehavior.Initialize(unit);
-                _initialized = true;
+
+                try
+                {
+                    _baseAI.Initialize(unit);
+                    _pairBehavior.Initialize(unit);
+                    _enrageBehavior.Initialize(unit);
+                    _initialized = true;
+                }
+                catch
+                {
+                    _baseAI.Dispose();
+                    _pairBehavior.Dispose();
+                    _enrageBehavior.Dispose();
+                    _initialized = false;
+                    throw;
+                }
             }
         }
 
         public void Tick(float dt)
         {
-            lock (_lock)
+            if (!_initialized)
             {
-                if (!_initialized)
-                    throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
+                lock (_lock)
+                {
+                    if (!_initialized)
+                        throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
+                }
             }
 
             _baseAI.Tick(dt);
