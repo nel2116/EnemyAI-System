@@ -4,6 +4,7 @@
 /// <author>CGC_10_田中 ミノル</author>
 
 using System;
+using System.Threading;
 using app.enemy.ai.behaviors;
 using app.enemy.data;
 using app.enemy.domain;
@@ -65,7 +66,7 @@ namespace app.enemy.ai
 
         public void Tick(float dt)
         {
-            if (!_initialized)
+            if (!Volatile.Read(ref _initialized))
             {
                 lock (_lock)
                 {

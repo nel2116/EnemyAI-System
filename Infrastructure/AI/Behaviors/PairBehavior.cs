@@ -71,7 +71,6 @@ namespace app.enemy.ai.behaviors
                 _token?.Dispose();
                 _token = null;
                 _enemy = null;
-                _initialized = false;
                 // Object is not expected to be reinitialized after disposal
             }
         }
