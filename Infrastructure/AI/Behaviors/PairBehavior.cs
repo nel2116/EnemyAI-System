@@ -66,15 +66,13 @@ namespace app.enemy.ai.behaviors
 
         private void OnTwinMateDead(TwinMateDeedEvent e)
         {
-            EnemyId id;
             lock (_lock)
             {
                 if (!_initialized || _disposed) return;
                 if (e.PairId != _pairId) return;
                 if (_enemy == null || e.Id == _enemy.Id) return;
-                id = e.Id;
+                OnPairMemberDied?.Invoke(e.Id);
             }
-            OnPairMemberDied?.Invoke(id);
         }
 
         public void Update(float deltaTime)

@@ -89,8 +89,12 @@ namespace app.enemy.ai
 
         /// <summary>
         /// Optional initialization hook for composed usage.
+        /// Call this when the AI instance is created via composition rather
+        /// than through inheritance so implementations can perform additional
+        /// setup. Derived types should override this to register events or
+        /// cache references related to the provided <paramref name="unit"/>.
         /// </summary>
-        /// <param name="unit">owning enemy unit</param>
+        /// <param name="unit">The owning enemy unit associated with this AI instance.</param>
         public virtual void Initialize(IEnemyUnit unit) { }
 
         private void OnEnemyDied(EnemyDiedEvent e)

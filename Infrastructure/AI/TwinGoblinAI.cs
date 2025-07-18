@@ -87,13 +87,10 @@ namespace app.enemy.ai
                     {
                         case InitStep.EnrageBehavior:
                             _enrageBehavior.Dispose();
-                            _pairBehavior.Dispose();
-                            _baseAI.Dispose();
-                            break;
+                            goto case InitStep.PairBehavior;
                         case InitStep.PairBehavior:
                             _pairBehavior.Dispose();
-                            _baseAI.Dispose();
-                            break;
+                            goto case InitStep.BaseAI;
                         case InitStep.BaseAI:
                             _baseAI.Dispose();
                             break;
@@ -107,6 +104,9 @@ namespace app.enemy.ai
         {
             lock (_lock)
             {
+                if (_disposed)
+                    throw new ObjectDisposedException(nameof(TwinGoblinAI), "Cannot call Tick on a disposed TwinGoblinAI instance.");
+
                 if (!_initialized)
                     throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
 
