@@ -65,8 +65,9 @@ namespace app.enemy.ai
                     _enrageBehavior.Initialize(unit);
                     _initialized = true;
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Console.Error.WriteLine($"Error during initialization: {ex}");
                     _baseAI.Dispose();
                     _pairBehavior.Dispose();
                     _enrageBehavior.Dispose();
