@@ -51,7 +51,9 @@ namespace app.enemy.ai.behaviors
 
         public void Dispose()
         {
-            // No cleanup is needed as this class does not allocate unmanaged resources.
+            // Reset fields for consistency, though no unmanaged resources are allocated.
+            _enemy = null;
+            _enraged = false;
         }
     }
 }

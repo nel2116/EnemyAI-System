@@ -70,7 +70,7 @@ namespace app.enemy.ai
             {
                 lock (_lock)
                 {
-                    if (!_initialized)
+                    if (!Volatile.Read(ref _initialized))
                         throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
                 }
             }
