@@ -53,7 +53,6 @@ namespace app.enemy.ai
         public void Initialize(IEnemyUnit unit)
         {
             ArgumentNullException.ThrowIfNull(unit);
-            if (_initialized) return;
             lock (_lock)
             {
                 if (_initialized) return;

@@ -22,6 +22,7 @@ namespace app.enemy.ai.behaviors
     {
         private readonly DomainEventDispatcher _dispatcher;
         private readonly EnemyId _pairId;
+        private readonly object _lock = new();
         private IDisposable? _token;
         private bool _initialized;
         private IEnemyUnit? _enemy;
@@ -38,10 +39,14 @@ namespace app.enemy.ai.behaviors
 
         public void Initialize(IEnemyUnit enemy)
         {
-            if (_initialized) return;
-            _enemy = enemy ?? throw new ArgumentNullException(nameof(enemy));
-            _initialized = true;
-            _token = _dispatcher.Register<TwinMateDeedEvent>(OnTwinMateDead);
+            ArgumentNullException.ThrowIfNull(enemy);
+            lock (_lock)
+            {
+                if (_initialized) return;
+                _enemy = enemy;
+                _token = _dispatcher.Register<TwinMateDeedEvent>(OnTwinMateDead);
+                _initialized = true;
+            }
         }
 
         private void OnTwinMateDead(TwinMateDeedEvent e)
@@ -61,7 +66,13 @@ namespace app.enemy.ai.behaviors
 
         public void Dispose()
         {
-            _token?.Dispose();
+            lock (_lock)
+            {
+                _token?.Dispose();
+                _token = null;
+                _enemy = null;
+                _initialized = false;
+            }
         }
     }
 }
