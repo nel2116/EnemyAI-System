@@ -25,13 +25,22 @@ namespace app.enemy.ai.behaviors
         private readonly EnemyId _pairId;
         private readonly object _lock = new();
         private IDisposable? _token;
-        private volatile bool _initialized;
+        private bool _initialized;
         private bool _disposed;
         private IEnemyUnit? _enemy;
 
         public event Action<EnemyId>? OnPairMemberDied;
 
-        public bool IsInitialized => _initialized;
+        public bool IsInitialized
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _initialized;
+                }
+            }
+        }
 
         public PairBehavior(DomainEventDispatcher dispatcher, EnemyId pairId)
         {
@@ -57,15 +66,23 @@ namespace app.enemy.ai.behaviors
 
         private void OnTwinMateDead(TwinMateDeedEvent e)
         {
-            if (!_initialized) return;
-            if (e.PairId != _pairId) return;
-            if (_enemy == null || e.Id == _enemy.Id) return;
-            OnPairMemberDied?.Invoke(e.Id);
+            EnemyId id;
+            lock (_lock)
+            {
+                if (!_initialized || _disposed) return;
+                if (e.PairId != _pairId) return;
+                if (_enemy == null || e.Id == _enemy.Id) return;
+                id = e.Id;
+            }
+            OnPairMemberDied?.Invoke(id);
         }
 
         public void Update(float deltaTime)
         {
-            if (!_initialized) return;
+            lock (_lock)
+            {
+                if (!_initialized || _disposed) return;
+            }
 
             // No operation. This behavior reacts to domain events and
             // requires no per-frame logic.
@@ -78,6 +95,7 @@ namespace app.enemy.ai.behaviors
                 if (_disposed) return;
                 _token?.Dispose();
                 _token = null;
+                _enemy = null;
                 _disposed = true;
             }
         }

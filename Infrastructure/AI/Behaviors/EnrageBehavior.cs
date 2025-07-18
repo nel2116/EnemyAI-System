@@ -19,7 +19,7 @@ namespace app.enemy.ai.behaviors
         private readonly float _atkMul;
         private bool _enraged;
         private readonly object _lock = new();
-        private volatile bool _initialized;
+        private bool _initialized;
         private bool _disposed;
 
         public event Action? OnEnrageTriggered;
@@ -27,7 +27,16 @@ namespace app.enemy.ai.behaviors
         public float SpeedMultiplier => _speedMul;
         public float AttackMultiplier => _atkMul;
         public bool IsEnraged => _enraged;
-        public bool IsInitialized => _initialized;
+        public bool IsInitialized
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _initialized;
+                }
+            }
+        }
 
         public EnrageBehavior(float speedMultiplier, float attackMultiplier)
         {
@@ -51,7 +60,10 @@ namespace app.enemy.ai.behaviors
 
         public void Update(float deltaTime)
         {
-            if (!_initialized) return;
+            lock (_lock)
+            {
+                if (!_initialized || _disposed) return;
+            }
 
             // No operation. This behavior is event-driven and does not
             // require per-frame updates.

@@ -80,7 +80,7 @@ namespace app.enemy.ai
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError($"Failed to initialize {step}: {ex.Message}\n{ex.StackTrace}");
+                    Trace.TraceError($"Failed to initialize {step}: {ex.Message}");
 
                     // clean up already-initialized behaviors in reverse order
                     switch (step)
@@ -109,11 +109,11 @@ namespace app.enemy.ai
             {
                 if (!_initialized)
                     throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
-            }
 
-            _baseAI.Tick(dt);
-            _pairBehavior.Update(dt);
-            _enrageBehavior.Update(dt);
+                _baseAI.Tick(dt);
+                _pairBehavior.Update(dt);
+                _enrageBehavior.Update(dt);
+            }
         }
 
         private void OnPairMemberDied()
