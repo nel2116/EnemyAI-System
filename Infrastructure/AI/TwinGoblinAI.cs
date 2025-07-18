@@ -19,6 +19,14 @@ namespace app.enemy.ai
 
     public sealed class TwinGoblinAI : IEnemyAi, IDisposable
     {
+        private enum InitStep
+        {
+            None,
+            BaseAI,
+            PairBehavior,
+            EnrageBehavior
+        }
+
         private readonly BasicEnemyAI _baseAI;
         private readonly IMoveLogic _move;
         private readonly ICombatLogic _combat;
@@ -28,6 +36,7 @@ namespace app.enemy.ai
         private readonly IEnrageBehavior _enrageBehavior;
         private readonly object _lock = new();
         private bool _initialized;
+        private bool _disposed;
 
         public TwinGoblinAI(
             IAIContext ctx,
@@ -59,13 +68,13 @@ namespace app.enemy.ai
             {
                 if (_initialized) return;
 
-                string step = nameof(_baseAI);
+                InitStep step = InitStep.BaseAI;
                 try
                 {
                     _baseAI.Initialize(unit);
-                    step = nameof(_pairBehavior);
+                    step = InitStep.PairBehavior;
                     _pairBehavior.Initialize(unit);
-                    step = nameof(_enrageBehavior);
+                    step = InitStep.EnrageBehavior;
                     _enrageBehavior.Initialize(unit);
                     _initialized = true;
                 }
@@ -74,20 +83,20 @@ namespace app.enemy.ai
                     Trace.TraceError($"Failed to initialize {step}: {ex.Message}\n{ex.StackTrace}");
 
                     // clean up already-initialized behaviors in reverse order
-                    if (step == nameof(_enrageBehavior))
+                    switch (step)
                     {
-                        _enrageBehavior.Dispose();
-                        _pairBehavior.Dispose();
-                        _baseAI.Dispose();
-                    }
-                    else if (step == nameof(_pairBehavior))
-                    {
-                        _pairBehavior.Dispose();
-                        _baseAI.Dispose();
-                    }
-                    else if (step == nameof(_baseAI))
-                    {
-                        _baseAI.Dispose();
+                        case InitStep.EnrageBehavior:
+                            _enrageBehavior.Dispose();
+                            _pairBehavior.Dispose();
+                            _baseAI.Dispose();
+                            break;
+                        case InitStep.PairBehavior:
+                            _pairBehavior.Dispose();
+                            _baseAI.Dispose();
+                            break;
+                        case InitStep.BaseAI:
+                            _baseAI.Dispose();
+                            break;
                     }
                     throw;
                 }
@@ -121,9 +130,15 @@ namespace app.enemy.ai
 
         public void Dispose()
         {
-            _baseAI.Dispose();
-            _pairBehavior.Dispose();
+            lock (_lock)
+            {
+                if (_disposed) return;
+                _disposed = true;
+            }
+
             _enrageBehavior.Dispose();
+            _pairBehavior.Dispose();
+            _baseAI.Dispose();
         }
     }
 }
