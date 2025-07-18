@@ -66,7 +66,6 @@ namespace app.enemy.ai.behaviors
         {
             // No operation. This behavior reacts to domain events and
             // requires no per-frame logic.
-            return;
         }
 
         public void Dispose()

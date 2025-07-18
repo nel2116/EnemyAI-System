@@ -53,7 +53,6 @@ namespace app.enemy.ai.behaviors
         {
             // No operation. This behavior is event-driven and does not
             // require per-frame updates.
-            return;
         }
 
         public void TriggerEnrage()
