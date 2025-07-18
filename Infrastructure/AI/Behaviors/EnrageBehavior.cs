@@ -17,6 +17,7 @@ namespace app.enemy.ai.behaviors
         private readonly float _speedMul;
         private readonly float _atkMul;
         private bool _enraged;
+        private IEnemyUnit? _enemy;
 
         public event Action? OnEnrageTriggered;
 
@@ -32,7 +33,7 @@ namespace app.enemy.ai.behaviors
 
         public void Initialize(IEnemyUnit enemy)
         {
-            ArgumentNullException.ThrowIfNull(enemy);
+            _enemy = enemy ?? throw new ArgumentNullException(nameof(enemy));
         }
 
         public void Update(float deltaTime)

@@ -15,7 +15,7 @@ namespace app.enemy.ai.behaviors
     public interface IPairBehavior : IEnemyBehavior
     {
         event Action<EnemyId> OnPairMemberDied;
-        bool IsPaired { get; }
+        bool IsInitialized { get; }
     }
 
     public sealed class PairBehavior : IPairBehavior
@@ -28,7 +28,7 @@ namespace app.enemy.ai.behaviors
 
         public event Action<EnemyId>? OnPairMemberDied;
 
-        public bool IsPaired => _initialized;
+        public bool IsInitialized => _initialized;
 
         public PairBehavior(DomainEventDispatcher dispatcher, EnemyId pairId)
         {
@@ -46,6 +46,7 @@ namespace app.enemy.ai.behaviors
 
         private void OnTwinMateDead(TwinMateDeedEvent e)
         {
+            if (!_initialized || _enemy == null) return;
             if (e.PairId != _pairId) return;
             if (e.Id == _enemy.Id) return;
             OnPairMemberDied?.Invoke(e.Id);
