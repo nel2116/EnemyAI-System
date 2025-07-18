@@ -51,7 +51,9 @@ namespace app.enemy.ai.behaviors
 
         public void Update(float deltaTime)
         {
-            // This behavior is event-driven and does not require per-frame updates.
+            // No operation. This behavior is event-driven and does not
+            // require per-frame updates.
+            return;
         }
 
         public void TriggerEnrage()

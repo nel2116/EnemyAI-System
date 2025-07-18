@@ -64,9 +64,9 @@ namespace app.enemy.ai.behaviors
 
         public void Update(float deltaTime)
         {
-            // behavior is event-driven, no per-frame logic
-            // This method is intentionally left empty because the PairBehavior
-            // class reacts to domain events rather than per-frame updates.
+            // No operation. This behavior reacts to domain events and
+            // requires no per-frame logic.
+            return;
         }
 
         public void Dispose()
