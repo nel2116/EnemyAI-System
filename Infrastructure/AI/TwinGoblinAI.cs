@@ -70,7 +70,6 @@ namespace app.enemy.ai
                     _baseAI.Dispose();
                     _pairBehavior.Dispose();
                     _enrageBehavior.Dispose();
-                    _initialized = false;
                     throw;
                 }
             }
@@ -79,13 +78,7 @@ namespace app.enemy.ai
         public void Tick(float dt)
         {
             if (!_initialized)
-            {
-                lock (_lock)
-                {
-                    if (!_initialized)
-                        throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
-                }
-            }
+                throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
 
             _baseAI.Tick(dt);
             _pairBehavior.Update(dt);
