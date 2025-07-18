@@ -21,7 +21,7 @@ namespace app.enemy.ai.behaviors
     public sealed class PairBehavior : IPairBehavior
     {
         private readonly DomainEventDispatcher _dispatcher;
-        private EnemyId _pairId;
+        private readonly EnemyId _pairId;
         private IDisposable? _token;
         private bool _initialized;
         private IEnemyUnit? _enemy;

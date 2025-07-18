@@ -25,7 +25,7 @@ namespace app.enemy.ai
         private readonly IPairBehavior _pairBehavior;
         private readonly IEnrageBehavior _enrageBehavior;
         private readonly object _lock = new();
-        private bool _initialized;
+        private volatile bool _initialized;
 
         public TwinGoblinAI(
             IAIContext ctx,
