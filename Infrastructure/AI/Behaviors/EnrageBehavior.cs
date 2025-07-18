@@ -59,11 +59,11 @@ namespace app.enemy.ai.behaviors
 
         public void TriggerEnrage()
         {
-            if (!_initialized)
-                throw new InvalidOperationException("EnrageBehavior must be initialized before triggering enrage.");
-
             lock (_lock)
             {
+                if (!_initialized)
+                    throw new InvalidOperationException("EnrageBehavior must be initialized before triggering enrage.");
+
                 if (_enraged) return;
                 _enraged = true;
                 OnEnrageTriggered?.Invoke();
