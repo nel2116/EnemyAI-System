@@ -8,6 +8,7 @@ namespace app.enemy.ai.behaviors
 {
     public interface IEnemyBehavior
     {
+        bool IsInitialized { get; }
         void Initialize(IEnemyUnit enemy);
         void Update(float deltaTime);
         void Dispose();
@@ -16,7 +17,6 @@ namespace app.enemy.ai.behaviors
     public interface IPairBehavior : IEnemyBehavior
     {
         event Action<EnemyId> OnPairMemberDied;
-        bool IsInitialized { get; }
     }
 
     public sealed class PairBehavior : IPairBehavior

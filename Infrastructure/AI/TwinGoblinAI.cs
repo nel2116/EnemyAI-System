@@ -27,7 +27,7 @@ namespace app.enemy.ai
         private readonly IPairBehavior _pairBehavior;
         private readonly IEnrageBehavior _enrageBehavior;
         private readonly object _lock = new();
-        private volatile bool _initialized;
+        private bool _initialized;
 
         public TwinGoblinAI(
             IAIContext ctx,
@@ -76,15 +76,19 @@ namespace app.enemy.ai
                     // clean up already-initialized behaviors in reverse order
                     if (step == nameof(_enrageBehavior))
                     {
+                        _enrageBehavior.Dispose();
                         _pairBehavior.Dispose();
                         _baseAI.Dispose();
                     }
                     else if (step == nameof(_pairBehavior))
                     {
+                        _pairBehavior.Dispose();
                         _baseAI.Dispose();
                     }
-
-                    _enrageBehavior.Dispose();
+                    else if (step == nameof(_baseAI))
+                    {
+                        _baseAI.Dispose();
+                    }
                     throw;
                 }
             }
@@ -92,8 +96,11 @@ namespace app.enemy.ai
 
         public void Tick(float dt)
         {
-            if (!_initialized)
-                throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
+            lock (_lock)
+            {
+                if (!_initialized)
+                    throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
+            }
 
             _baseAI.Tick(dt);
             _pairBehavior.Update(dt);

@@ -21,13 +21,13 @@ namespace app.enemy.ai.behaviors
         private readonly object _lock = new();
         private volatile bool _initialized;
         private bool _disposed;
-        private IEnemyUnit? _enemy;
 
         public event Action? OnEnrageTriggered;
 
         public float SpeedMultiplier => _speedMul;
         public float AttackMultiplier => _atkMul;
         public bool IsEnraged => _enraged;
+        public bool IsInitialized => _initialized;
 
         public EnrageBehavior(float speedMultiplier, float attackMultiplier)
         {
@@ -45,7 +45,6 @@ namespace app.enemy.ai.behaviors
 
                 if (_initialized) return;
 
-                _enemy = enemy;
                 _initialized = true;
             }
         }
