@@ -51,6 +51,9 @@ namespace app.enemy.ai.behaviors
 
         public void Update(float deltaTime)
         {
+            if (!_initialized)
+                throw new InvalidOperationException($"{nameof(EnrageBehavior)} must be initialized before calling {nameof(Update)}.");
+
             // No operation. This behavior is event-driven and does not
             // require per-frame updates.
         }

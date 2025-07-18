@@ -64,6 +64,8 @@ namespace app.enemy.ai.behaviors
 
         public void Update(float deltaTime)
         {
+            if (!_initialized) return;
+
             // No operation. This behavior reacts to domain events and
             // requires no per-frame logic.
         }
