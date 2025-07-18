@@ -4,6 +4,7 @@
 /// <author>CGC_10_田中 ミノル</author>
 
 using System;
+using System.Diagnostics;
 using System.Threading;
 using app.enemy.ai.behaviors;
 using app.enemy.data;
@@ -58,19 +59,22 @@ namespace app.enemy.ai
             {
                 if (_initialized) return;
 
+                string step = nameof(_baseAI);
                 try
                 {
                     _baseAI.Initialize(unit);
+                    step = nameof(_pairBehavior);
                     _pairBehavior.Initialize(unit);
+                    step = nameof(_enrageBehavior);
                     _enrageBehavior.Initialize(unit);
                     _initialized = true;
                 }
                 catch (Exception ex)
                 {
-                    Console.Error.WriteLine($"Error during initialization: {ex}");
-                    _baseAI.Dispose();
-                    _pairBehavior.Dispose();
+                    Trace.TraceError($"Failed to initialize {step}: {ex}");
                     _enrageBehavior.Dispose();
+                    _pairBehavior.Dispose();
+                    _baseAI.Dispose();
                     throw;
                 }
             }

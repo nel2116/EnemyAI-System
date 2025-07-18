@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using app.enemy.domain;
 using app.enemy.domain.events;
 using app.enemy.domain.interfaces;
@@ -24,7 +25,7 @@ namespace app.enemy.ai.behaviors
         private readonly EnemyId _pairId;
         private readonly object _lock = new();
         private IDisposable? _token;
-        private bool _initialized;
+        private volatile bool _initialized;
         private bool _disposed;
         private IEnemyUnit? _enemy;
 
@@ -56,7 +57,7 @@ namespace app.enemy.ai.behaviors
 
         private void OnTwinMateDead(TwinMateDeedEvent e)
         {
-            if (!_initialized) return;
+            if (!Volatile.Read(ref _initialized)) return;
             if (e.PairId != _pairId) return;
             if (_enemy == null || e.Id == _enemy.Id) return;
             OnPairMemberDied?.Invoke(e.Id);
@@ -64,7 +65,7 @@ namespace app.enemy.ai.behaviors
 
         public void Update(float deltaTime)
         {
-            if (!_initialized) return;
+            if (!Volatile.Read(ref _initialized)) return;
 
             // No operation. This behavior reacts to domain events and
             // requires no per-frame logic.

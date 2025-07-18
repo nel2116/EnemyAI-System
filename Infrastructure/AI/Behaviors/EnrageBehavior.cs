@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using app.enemy.domain.interfaces;
 
 namespace app.enemy.ai.behaviors
@@ -18,7 +19,7 @@ namespace app.enemy.ai.behaviors
         private readonly float _atkMul;
         private bool _enraged;
         private readonly object _lock = new();
-        private bool _initialized;
+        private volatile bool _initialized;
         private bool _disposed;
         private IEnemyUnit? _enemy;
 
@@ -51,7 +52,7 @@ namespace app.enemy.ai.behaviors
 
         public void Update(float deltaTime)
         {
-            if (!_initialized) return;
+            if (!Volatile.Read(ref _initialized)) return;
 
             // No operation. This behavior is event-driven and does not
             // require per-frame updates.
@@ -61,7 +62,7 @@ namespace app.enemy.ai.behaviors
         {
             lock (_lock)
             {
-                if (!_initialized)
+                if (!Volatile.Read(ref _initialized))
                     throw new InvalidOperationException("EnrageBehavior must be initialized before triggering enrage.");
 
                 if (_enraged) return;
