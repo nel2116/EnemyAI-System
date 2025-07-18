@@ -35,7 +35,10 @@ namespace app.enemy.ai.behaviors
             if (enemy == null) throw new ArgumentNullException(nameof(enemy));
         }
 
-        public void Update(float deltaTime) { }
+        public void Update(float deltaTime)
+        {
+            // This behavior is event-driven and does not require per-frame updates.
+        }
 
         public void TriggerEnrage()
         {
@@ -44,6 +47,9 @@ namespace app.enemy.ai.behaviors
             OnEnrageTriggered?.Invoke();
         }
 
-        public void Dispose() { }
+        public void Dispose()
+        {
+            // No cleanup is needed as this class does not allocate unmanaged resources.
+        }
     }
 }

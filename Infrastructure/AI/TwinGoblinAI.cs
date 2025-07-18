@@ -51,8 +51,7 @@ namespace app.enemy.ai
 
         public void Initialize(IEnemyUnit unit)
         {
-            if (unit == null)
-                throw new ArgumentNullException(nameof(unit));
+            ArgumentNullException.ThrowIfNull(unit);
             if (_initialized) return;
             _baseAI.Initialize(unit);
             _pairBehavior.Initialize(unit);
