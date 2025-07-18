@@ -78,7 +78,6 @@ namespace app.enemy.ai.behaviors
                 if (_disposed) return;
                 _token?.Dispose();
                 _token = null;
-                _enemy = null;
                 _disposed = true;
             }
         }

@@ -71,10 +71,20 @@ namespace app.enemy.ai
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError($"Failed to initialize {step}: {ex.Message}", ex);
+                    Trace.TraceError($"Failed to initialize {step}: {ex.Message}\n{ex.StackTrace}");
+
+                    // clean up already-initialized behaviors in reverse order
+                    if (step == nameof(_enrageBehavior))
+                    {
+                        _pairBehavior.Dispose();
+                        _baseAI.Dispose();
+                    }
+                    else if (step == nameof(_pairBehavior))
+                    {
+                        _baseAI.Dispose();
+                    }
+
                     _enrageBehavior.Dispose();
-                    _pairBehavior.Dispose();
-                    _baseAI.Dispose();
                     throw;
                 }
             }

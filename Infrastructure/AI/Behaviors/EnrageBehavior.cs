@@ -76,7 +76,6 @@ namespace app.enemy.ai.behaviors
             lock (_lock)
             {
                 if (_disposed) return;
-                _enemy = null;
                 _disposed = true;
             }
         }
