@@ -82,19 +82,7 @@ namespace app.enemy.ai
                 {
                     Trace.TraceError($"Failed to initialize {step}: {ex.Message}");
 
-                    // clean up already-initialized behaviors in reverse order
-                    switch (step)
-                    {
-                        case InitStep.EnrageBehavior:
-                            _enrageBehavior.Dispose();
-                            goto case InitStep.PairBehavior;
-                        case InitStep.PairBehavior:
-                            _pairBehavior.Dispose();
-                            goto case InitStep.BaseAI;
-                        case InitStep.BaseAI:
-                            _baseAI.Dispose();
-                            break;
-                    }
+                    CleanupInitializedBehaviors(step);
                     throw;
                 }
             }
@@ -126,6 +114,16 @@ namespace app.enemy.ai
             _move.SetSpeedMultiplier(_enrageBehavior.SpeedMultiplier);
             _combat.SetAttackMultiplier(_enrageBehavior.AttackMultiplier);
             _dispatcher.Dispatch(new TwinEnragedEvent(_ctx.EnemyId));
+        }
+
+        private void CleanupInitializedBehaviors(InitStep step)
+        {
+            if (step >= InitStep.EnrageBehavior)
+                _enrageBehavior.Dispose();
+            if (step >= InitStep.PairBehavior)
+                _pairBehavior.Dispose();
+            if (step >= InitStep.BaseAI)
+                _baseAI.Dispose();
         }
 
         public void Dispose()

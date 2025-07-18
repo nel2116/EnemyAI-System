@@ -17,7 +17,7 @@ namespace app.enemy.ai.behaviors
     {
         private readonly float _speedMul;
         private readonly float _atkMul;
-        private volatile bool _enraged;
+        private bool _enraged;
         private readonly object _lock = new();
         private bool _initialized;
         private bool _disposed;
@@ -26,7 +26,16 @@ namespace app.enemy.ai.behaviors
 
         public float SpeedMultiplier => _speedMul;
         public float AttackMultiplier => _atkMul;
-        public bool IsEnraged => Volatile.Read(ref _enraged);
+        public bool IsEnraged
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _enraged;
+                }
+            }
+        }
         public bool IsInitialized
         {
             get
