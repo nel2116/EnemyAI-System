@@ -24,6 +24,7 @@ namespace app.enemy.ai
         private readonly IAIContext _ctx;
         private readonly IPairBehavior _pairBehavior;
         private readonly IEnrageBehavior _enrageBehavior;
+        private readonly object _lock = new();
         private bool _initialized;
 
         public TwinGoblinAI(
@@ -53,10 +54,14 @@ namespace app.enemy.ai
         {
             ArgumentNullException.ThrowIfNull(unit);
             if (_initialized) return;
-            _baseAI.Initialize(unit);
-            _pairBehavior.Initialize(unit);
-            _enrageBehavior.Initialize(unit);
-            _initialized = true;
+            lock (_lock)
+            {
+                if (_initialized) return;
+                _baseAI.Initialize(unit);
+                _pairBehavior.Initialize(unit);
+                _enrageBehavior.Initialize(unit);
+                _initialized = true;
+            }
         }
 
         public void Tick(float dt)

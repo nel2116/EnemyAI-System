@@ -32,7 +32,7 @@ namespace app.enemy.ai.behaviors
 
         public void Initialize(IEnemyUnit enemy)
         {
-            if (enemy == null) throw new ArgumentNullException(nameof(enemy));
+            ArgumentNullException.ThrowIfNull(enemy);
         }
 
         public void Update(float deltaTime)
