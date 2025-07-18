@@ -66,7 +66,7 @@ namespace app.enemy.ai
 
         public void Tick(float dt)
         {
-            if (!Volatile.Read(ref _initialized))
+            if (!_initialized)
                 throw new InvalidOperationException("TwinGoblinAI must be initialized before calling Tick. Call Initialize() first.");
 
             _baseAI.Tick(dt);

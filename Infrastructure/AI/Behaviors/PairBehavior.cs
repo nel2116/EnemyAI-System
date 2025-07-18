@@ -71,7 +71,7 @@ namespace app.enemy.ai.behaviors
                 _token?.Dispose();
                 _token = null;
                 _enemy = null;
-                _initialized = false;
+                // Do not reset _initialized to avoid reusing a disposed instance.
             }
         }
     }

@@ -51,9 +51,8 @@ namespace app.enemy.ai.behaviors
 
         public void Dispose()
         {
-            // Reset fields for consistency, though no unmanaged resources are allocated.
+            // Release references; this behavior is not meant to be reused after disposal.
             _enemy = null;
-            _enraged = false;
         }
     }
 }
