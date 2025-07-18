@@ -17,6 +17,9 @@ namespace app.enemy.ai.behaviors
         private readonly float _speedMul;
         private readonly float _atkMul;
         private bool _enraged;
+        private readonly object _lock = new();
+        private bool _initialized;
+        private bool _disposed;
         private IEnemyUnit? _enemy;
 
         public event Action? OnEnrageTriggered;
@@ -34,7 +37,16 @@ namespace app.enemy.ai.behaviors
         public void Initialize(IEnemyUnit enemy)
         {
             ArgumentNullException.ThrowIfNull(enemy);
-            _enemy = enemy;
+            lock (_lock)
+            {
+                if (_disposed)
+                    throw new ObjectDisposedException(nameof(EnrageBehavior));
+
+                if (_initialized) return;
+
+                _enemy = enemy;
+                _initialized = true;
+            }
         }
 
         public void Update(float deltaTime)
@@ -51,8 +63,12 @@ namespace app.enemy.ai.behaviors
 
         public void Dispose()
         {
-            // Release references; this behavior is not meant to be reused after disposal.
-            _enemy = null;
+            lock (_lock)
+            {
+                if (_disposed) return;
+                _enemy = null;
+                _disposed = true;
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ namespace app.enemy.ai.behaviors
         private readonly object _lock = new();
         private IDisposable? _token;
         private bool _initialized;
+        private bool _disposed;
         private IEnemyUnit? _enemy;
 
         public event Action<EnemyId>? OnPairMemberDied;
@@ -42,7 +43,11 @@ namespace app.enemy.ai.behaviors
             ArgumentNullException.ThrowIfNull(enemy);
             lock (_lock)
             {
+                if (_disposed)
+                    throw new ObjectDisposedException(nameof(PairBehavior));
+
                 if (_initialized) return;
+
                 _enemy = enemy;
                 _token = _dispatcher.Register<TwinMateDeedEvent>(OnTwinMateDead);
                 _initialized = true;
@@ -51,9 +56,9 @@ namespace app.enemy.ai.behaviors
 
         private void OnTwinMateDead(TwinMateDeedEvent e)
         {
-            if (!_initialized || _enemy == null) return;
+            if (!_initialized) return;
             if (e.PairId != _pairId) return;
-            if (e.Id == _enemy.Id) return;
+            if (e.Id == _enemy!.Id) return;
             OnPairMemberDied?.Invoke(e.Id);
         }
 
@@ -68,10 +73,11 @@ namespace app.enemy.ai.behaviors
         {
             lock (_lock)
             {
+                if (_disposed) return;
                 _token?.Dispose();
                 _token = null;
                 _enemy = null;
-                // Do not reset _initialized to avoid reusing a disposed instance.
+                _disposed = true;
             }
         }
     }
