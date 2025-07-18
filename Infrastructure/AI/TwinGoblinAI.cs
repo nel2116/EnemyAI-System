@@ -80,7 +80,7 @@ namespace app.enemy.ai
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError($"Failed to initialize {step}: {ex.Message}");
+                    Trace.TraceError($"Failed to initialize {step}: {ex}");
 
                     CleanupInitializedBehaviors(step);
                     throw;
@@ -119,11 +119,38 @@ namespace app.enemy.ai
         private void CleanupInitializedBehaviors(InitStep step)
         {
             if (step >= InitStep.EnrageBehavior)
-                _enrageBehavior.Dispose();
+            {
+                try
+                {
+                    _enrageBehavior.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Exception during _enrageBehavior.Dispose(): {ex}");
+                }
+            }
             if (step >= InitStep.PairBehavior)
-                _pairBehavior.Dispose();
+            {
+                try
+                {
+                    _pairBehavior.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Exception during _pairBehavior.Dispose(): {ex}");
+                }
+            }
             if (step >= InitStep.BaseAI)
-                _baseAI.Dispose();
+            {
+                try
+                {
+                    _baseAI.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine($"Exception during _baseAI.Dispose(): {ex}");
+                }
+            }
         }
 
         public void Dispose()

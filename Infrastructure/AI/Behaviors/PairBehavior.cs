@@ -70,6 +70,7 @@ namespace app.enemy.ai.behaviors
             {
                 if (!_initialized || _disposed) return;
                 if (e.PairId != _pairId) return;
+                System.Diagnostics.Debug.Assert(_enemy != null, "Invariant violated: _enemy should not be null when _initialized is true.");
                 if (e.Id == _enemy!.Id) return;
                 OnPairMemberDied?.Invoke(e.Id);
             }

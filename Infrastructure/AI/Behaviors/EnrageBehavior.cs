@@ -82,6 +82,9 @@ namespace app.enemy.ai.behaviors
         {
             lock (_lock)
             {
+                if (_disposed)
+                    throw new ObjectDisposedException(nameof(EnrageBehavior));
+
                 if (!_initialized)
                     throw new InvalidOperationException("EnrageBehavior must be initialized before triggering enrage.");
 
