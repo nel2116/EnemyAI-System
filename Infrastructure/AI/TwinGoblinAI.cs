@@ -161,9 +161,32 @@ namespace app.enemy.ai
                 _disposed = true;
             }
 
-            _enrageBehavior.Dispose();
-            _pairBehavior.Dispose();
-            _baseAI.Dispose();
+            try
+            {
+                _enrageBehavior.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception during _enrageBehavior.Dispose(): {ex}");
+            }
+
+            try
+            {
+                _pairBehavior.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception during _pairBehavior.Dispose(): {ex}");
+            }
+
+            try
+            {
+                _baseAI.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Exception during _baseAI.Dispose(): {ex}");
+            }
         }
     }
 }
